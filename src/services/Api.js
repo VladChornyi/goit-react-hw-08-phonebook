@@ -1,10 +1,13 @@
 import axios from 'axios';
+import { authTokenSelector } from '../redux/auth/auth-selectors';
 
-axios.defaults.baseURL = 'http://localhost:4040/';
+axios.defaults.baseURL = 'https://connections-api.herokuapp.com';
 
-const getContactsApi = () => {
+const getContactsApi = async getState => {
   return axios
-    .get('contacts')
+    .get('contacts', {
+      headers: { Authorization: `Bearer ${authTokenSelector(getState())}` },
+    })
     .then(({ data }) => data)
     .catch(error => {
       throw error;
@@ -13,26 +16,60 @@ const getContactsApi = () => {
 
 export { getContactsApi };
 
-const addContactApi = contactData => {
+const addContactApi = async (contactData, getState) => {
   return axios
-    .post(`contacts`, contactData)
+    .post(`contacts`, contactData, {
+      headers: { Authorization: `Bearer ${authTokenSelector(getState())}` },
+    })
     .then(({ data }) => {
       return data;
     })
-    .catch(err => {
-      throw err;
+    .catch(error => {
+      throw error;
     });
 };
 
 export { addContactApi };
 
-const deleteContactApi = contactId => {
+const deleteContactApi = (contactId, getState) => {
   return axios
-    .delete(`contacts/${contactId}`)
+    .delete(`contacts/${contactId}`, {
+      headers: { Authorization: `Bearer ${authTokenSelector(getState())}` },
+    })
     .then(({ data }) => data)
-    .catch(err => {
-      throw err;
+    .catch(error => {
+      throw error;
     });
 };
 
 export { deleteContactApi };
+
+const signUpApi = async user => {
+  try {
+    const { data } = await axios.post('users/signup', user);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+export { signUpApi };
+
+const signInApi = async user => {
+  try {
+    const { data } = await axios.post('users/login', user);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+export { signInApi };
+
+const logOutApi = async authToken => {
+  axios.defaults.headers.common['Authorization'] = authToken;
+  try {
+    return await axios.post('users/logout');
+  } catch (error) {
+    throw error;
+  }
+};
+export { logOutApi };

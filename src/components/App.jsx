@@ -1,17 +1,31 @@
-import ContactsForm from './contactsForm/ContactsForm';
-import ContactsList from './contactsList/ContactsList';
-import Filter from './filter/Filter';
+import { Redirect, Switch } from 'react-router';
+
+import Contacts from '../pages/contactsPage/ContactsPage';
+import HomePage from '../pages/homePage/HomePage';
+import LoginPage from '../pages/lognPage/LoginPage';
+import RegisterPage from '../pages/registerPage/RegisterPage';
+import { PrivateRoute, PublicRoute } from '../routes/routes';
+import Navigation from './navigation/Navigation';
 
 const App = () => {
   return (
     <>
-      <div>
-        <h1>Phonebook</h1>
-        <ContactsForm />
-        <h2>Contacts</h2>
-        <Filter />
-        <ContactsList />
-      </div>
+      <Navigation />
+      <Switch>
+        <PublicRoute path="/" exact>
+          <HomePage />
+        </PublicRoute>
+        <PrivateRoute path="/contacts">
+          <Contacts />
+        </PrivateRoute>
+        <PublicRoute path="/register" restricted exact>
+          <RegisterPage />
+        </PublicRoute>
+        <PublicRoute path="/login" restricted exact>
+          <LoginPage />
+        </PublicRoute>
+        <Redirect to="/" />
+      </Switch>
     </>
   );
 };
