@@ -10,6 +10,12 @@ const Navigation = () => {
   const userToken = useSelector(authTokenSelector);
   const dispatch = useDispatch();
   const history = useHistory();
+  useEffect(() => {
+    effect;
+    return () => {
+      cleanup;
+    };
+  }, [input]);
 
   const onHandleLogOut = async e => {
     e.preventDefault();
